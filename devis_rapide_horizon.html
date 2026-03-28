@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Devis Rapide — Horizon Démolition</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#f2f4f6;color:#1a1a2e;min-height:100vh;padding-bottom:40px}
+.app{max-width:480px;margin:0 auto;padding:12px}
+
+/* HEADER */
+.logo-bar{display:flex;align-items:center;gap:12px;padding:14px 16px;background:#0D2B3E;border-radius:12px;margin-bottom:14px}
+.logo-circle{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#0e8a8a,#1a4a62);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;color:#fff;flex-shrink:0}
+.logo-bar h1{font-size:16px;font-weight:700;color:#fff;letter-spacing:0.3px}
+.logo-bar p{font-size:11px;color:rgba(255,255,255,0.6);margin-top:2px}
+
+/* TABS */
+.pole-tabs{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:14px}
+.pole-tab{padding:11px 8px;border:1.5px solid #dde4ea;border-radius:10px;background:#fff;cursor:pointer;text-align:center;transition:all .15s;user-select:none}
+.pole-tab.active{background:#0D2B3E;border-color:#0D2B3E}
+.pole-tab .pole-icon{font-size:20px;display:block;margin-bottom:4px}
+.pole-tab .pole-label{font-size:11px;font-weight:600;color:#4a6070}
+.pole-tab.active .pole-label{color:#fff}
+
+/* CARDS */
+.card{background:#fff;border:1px solid #e8edf2;border-radius:12px;padding:14px 16px;margin-bottom:10px}
+.card h2{font-size:11px;font-weight:700;color:#7a9aaa;margin-bottom:12px;text-transform:uppercase;letter-spacing:0.8px}
+
+/* FIELDS */
+.field{margin-bottom:12px}
+.field label{display:block;font-size:13px;color:#4a6070;margin-bottom:5px;font-weight:500}
+.field input[type=number],.field select{width:100%;height:42px;font-size:15px;padding:0 12px;border:1.5px solid #dde4ea;border-radius:8px;background:#fff;color:#1a1a2e;outline:none;-webkit-appearance:none;appearance:none}
+.field input[type=number]:focus,.field select:focus{border-color:#0D2B3E}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+/* CHIPS */
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{padding:7px 12px;border:1.5px solid #dde4ea;border-radius:20px;font-size:12px;cursor:pointer;color:#4a6070;background:#fff;transition:all .15s;user-select:none;line-height:1.4;text-align:center}
+.chip.sel{background:#0D2B3E;border-color:#0D2B3E;color:#fff}
+.chip small{display:block;font-size:10px;opacity:0.8;margin-top:1px}
+
+/* TOGGLES */
+.toggle-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #f0f4f8}
+.toggle-row:last-child{border-bottom:none;padding-bottom:0}
+.toggle-label{font-size:13px;color:#1a1a2e;font-weight:500}
+.toggle-sub{font-size:11px;color:#7a9aaa;display:block;margin-top:2px}
+.switch{position:relative;width:44px;height:24px;flex-shrink:0}
+.switch input{opacity:0;width:0;height:0}
+.slider-sw{position:absolute;inset:0;background:#dde4ea;border-radius:12px;cursor:pointer;transition:.2s}
+.slider-sw:before{content:"";position:absolute;width:18px;height:18px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,0.2)}
+input:checked+.slider-sw{background:#0e8a8a}
+input:checked+.slider-sw:before{transform:translateX(20px)}
+
+/* BUTTON */
+.calc-btn{width:100%;padding:15px;background:#0D2B3E;color:#fff;border:none;border-radius:12px;font-size:16px;font-weight:700;cursor:pointer;margin-top:8px;letter-spacing:0.3px;transition:opacity .15s}
+.calc-btn:active{opacity:0.85}
+
+/* RESULT */
+.result{background:#0D2B3E;border-radius:12px;padding:18px;margin-top:12px;display:none}
+.result.show{display:block}
+.res-pole{font-size:10px;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
+.res-ht{color:#fff;font-size:32px;font-weight:700;letter-spacing:-0.5px}
+.res-ttc{color:#0e8a8a;font-size:14px;margin-top:3px;font-weight:500}
+.res-lines{margin-top:14px;border-top:1px solid rgba(255,255,255,0.12);padding-top:14px}
+.res-line{display:flex;justify-content:space-between;align-items:baseline;padding:5px 0;border-bottom:1px solid rgba(255,255,255,0.06)}
+.res-line:last-child{border-bottom:none;border-top:1px solid rgba(255,255,255,0.2);margin-top:4px;padding-top:10px}
+.rl{font-size:12px;color:rgba(255,255,255,0.65);max-width:65%}
+.rv{font-size:13px;font-weight:600;color:#fff}
+.rv.incl{color:#0e8a8a}
+.rv.main{color:#0e8a8a;font-size:15px}
+.res-warn{font-size:11px;color:rgba(255,255,255,0.45);margin-top:12px;line-height:1.6;padding-top:12px;border-top:1px solid rgba(255,255,255,0.1)}
+
+/* SHARE */
+.share-bar{display:flex;gap:8px;margin-top:12px}
+.share-btn{flex:1;padding:10px;border:1.5px solid rgba(255,255,255,0.2);border-radius:8px;background:transparent;color:#fff;font-size:12px;font-weight:600;cursor:pointer;text-align:center;transition:background .15s}
+.share-btn:active{background:rgba(255,255,255,0.1)}
+
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <div class="logo-bar">
+    <div class="logo-circle">HD</div>
+    <div>
+      <h1>Horizon Démolition</h1>
+      <p>Devis rapide terrain — usage interne</p>
+    </div>
+  </div>
+
+  <div class="pole-tabs">
+    <div class="pole-tab active" onclick="setPole('classique',this)">
+      <span class="pole-icon">📦</span>
+      <span class="pole-label">Débarras classique</span>
+    </div>
+    <div class="pole-tab" onclick="setPole('tac',this)">
+      <span class="pole-icon">⚠️</span>
+      <span class="pole-label">Débarras TAC</span>
+    </div>
+    <div class="pole-tab" onclick="setPole('diogene',this)">
+      <span class="pole-icon">🏚️</span>
+      <span class="pole-label">Diogène</span>
+    </div>
+    <div class="pole-tab" onclick="setPole('terrassement',this)">
+      <span class="pole-icon">🚜</span>
+      <span class="pole-label">Terrassement</span>
+    </div>
+  </div>
+
+  <!-- ===== CLASSIQUE ===== -->
+  <div id="pole-classique">
+    <div class="card">
+      <h2>Surface &amp; encombrement</h2>
+      <div class="field">
+        <label>Surface du logement (m²)</label>
+        <input type="number" id="cl-surface" value="60" min="1" step="1" inputmode="numeric">
+      </div>
+      <div class="field">
+        <label>Niveau d'encombrement</label>
+        <div class="chips" id="cl-enc">
+          <div class="chip sel" data-val="12.5">Peu encombré<small>~0,8 m · 12,50 €/m²</small></div>
+          <div class="chip" data-val="17.5">Standard<small>~1,2 m · 17,50 €/m²</small></div>
+          <div class="chip" data-val="25">Très encombré<small>~1,5 m · 25 €/m²</small></div>
+        </div>
+      </div>
+      <div class="field">
+        <label>Option nettoyage finition</label>
+        <div class="chips" id="cl-net">
+          <div class="chip sel" data-val="0">Sans nettoyage</div>
+          <div class="chip" data-val="7">Avec nettoyage<small>+7 €/m²</small></div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Paramètres chantier</h2>
+      <div class="field-row">
+        <div class="field">
+          <label>Étages</label>
+          <input type="number" id="cl-etages" value="0" min="0" max="10" step="1" inputmode="numeric">
+        </div>
+        <div class="field">
+          <label>Ascenseur</label>
+          <select id="cl-asc"><option value="1">Oui</option><option value="0" selected>Non</option></select>
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Déplacement (km)</label>
+          <input type="number" id="cl-dep" value="20" min="0" step="1" inputmode="numeric">
+        </div>
+        <div class="field">
+          <label>Déchetterie (km)</label>
+          <input type="number" id="cl-dec" value="8" min="0" step="1" inputmode="numeric">
+        </div>
+      </div>
+      <div class="toggle-row">
+        <div><span class="toggle-label">Urgence &lt; 48h</span><span class="toggle-sub">+20% sur total HT</span></div>
+        <label class="switch"><input type="checkbox" id="cl-urg"><span class="slider-sw"></span></label>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== TAC ===== -->
+  <div id="pole-tac" class="hidden">
+    <div class="card">
+      <h2>Surface &amp; encombrement</h2>
+      <div class="field">
+        <label>Surface du logement (m²)</label>
+        <input type="number" id="tac-surface" value="50" min="1" step="1" inputmode="numeric">
+      </div>
+      <div class="field">
+        <label>Niveau d'encombrement</label>
+        <div class="chips" id="tac-enc">
+          <div class="chip sel" data-val="17.5">Peu encombré<small>~0,8 m · 17,50 €/m²</small></div>
+          <div class="chip" data-val="25">Standard<small>~1,2 m · 25 €/m²</small></div>
+          <div class="chip" data-val="35">Très encombré<small>~1,5 m · 35 €/m²</small></div>
+        </div>
+      </div>
+      <div class="field">
+        <label>Supplément saleté</label>
+        <div class="chips" id="tac-sal">
+          <div class="chip sel" data-val="7.5">Légère<small>+7,50 €/m²</small></div>
+          <div class="chip" data-val="15">Moyenne<small>+15 €/m²</small></div>
+          <div class="chip" data-val="30">Lourde<small>+30 €/m²</small></div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Options TAC</h2>
+      <div class="toggle-row">
+        <div><span class="toggle-label">Désinfection / désodorisation</span><span class="toggle-sub">+14 €/m² (moy.)</span></div>
+        <label class="switch"><input type="checkbox" id="tac-desinf"><span class="slider-sw"></span></label>
+      </div>
+      <div class="toggle-row">
+        <div><span class="toggle-label">Nettoyage profond sol/murs</span><span class="toggle-sub">+10,50 €/m² (moy.)</span></div>
+        <label class="switch"><input type="checkbox" id="tac-nett"><span class="slider-sw"></span></label>
+      </div>
+      <div class="toggle-row">
+        <div><span class="toggle-label">Traitement anti-nuisibles</span><span class="toggle-sub">+350 € forfait</span></div>
+        <label class="switch"><input type="checkbox" id="tac-nuis"><span class="slider-sw"></span></label>
+      </div>
+      <div class="toggle-row">
+        <div><span class="toggle-label">Évacuation déchets biologiques</span><span class="toggle-sub">+275 € forfait</span></div>
+        <label class="switch"><input type="checkbox" id="tac-bio"><span class="slider-sw"></span></label>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Paramètres chantier</h2>
+      <div class="field-row">
+        <div class="field">
+          <label>Étages</label>
+          <input type="number" id="tac-etages" value="0" min="0" max="10" step="1" inputmode="numeric">
+        </div>
+        <div class="field">
+          <label>Ascenseur</label>
+          <select id="tac-asc"><option value="1">Oui</option><option value="0" selected>Non</option></select>
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Déplacement (km)</label>
+          <input type="number" id="tac-dep" value="20" min="0" step="1" inputmode="numeric">
+        </div>
+        <div class="field">
+          <label>Déchetterie (km)</label>
+          <input type="number" id="tac-dec" value="8" min="0" step="1" inputmode="numeric">
+        </div>
+      </div>
+      <div class="toggle-row">
+        <div><span class="toggle-label">Urgence &lt; 48h</span><span class="toggle-sub">+20% sur total HT</span></div>
+        <label class="switch"><input type="checkbox" id="tac-urg"><span class="slider-sw"></span></label>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== DIOGÈNE ===== -->
+  <div id="pole-diogene" class="hidden">
+    <div class="card">
+      <h2>Surface &amp; encombrement</h2>
+      <div class="field">
+        <label>Surface du logement (m²)</label>
+        <input type="number" id="dio-surface" value="50" min="1" step="1" inputmode="numeric">
+      </div>
+      <div class="field">
+        <label>Niveau d'encombrement</label>
+        <div class="chips" id="dio-enc">
+          <div class="chip sel" data-val="25">Peu<small>~0,8 m · 25 €/m²</small></div>
+          <div class="chip" data-val="27.5">Standard<small>~1,2 m · 27,50 €/m²</small></div>
+          <div class="chip" data-val="40">Très enc.<small>~1,5 m · 40 €/m²</small></div>
+          <div class="chip" data-val="52.5">Extrême<small>~2,0 m · 52,50 €/m²</small></div>
+          <div class="chip" data-val="67.5">Plafond<small>~2,5 m · 67,50 €/m²</small></div>
+        </div>
+      </div>
+      <div class="field">
+        <label>Niveau de saleté</label>
+        <div class="chips" id="dio-sal">
+          <div class="chip" data-val="22.5">Moyenne<small>+22,50 €/m²</small></div>
+          <div class="chip sel" data-val="40">Lourde (90% des cas)<small>+40 €/m²</small></div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Prestations (systématiques pré-cochées)</h2>
+      <div class="toggle-row">
+        <div><span class="toggle-label">Désinfection totale</span><span class="toggle-sub">+15 €/m²</span></div>
+        <label class="switch"><input type="checkbox" id="dio-desinf" checked><span class="slider-sw"></span></label>
+      </div>
+      <div class="toggle-row">
+        <div><span class="toggle-label">Désodorisation ozone</span><span class="toggle-sub">+20 €/m²</span></div>
+        <label class="switch"><input type="checkbox" id="dio-ozone" checked><span class="slider-sw"></span></label>
+      </div>
+      <div class="toggle-row">
+        <div><span class="toggle-label">Traitement anti-nuisibles</span><span class="toggle-sub">+500 € forfait</span></div>
+        <label class="switch"><input type="checkbox" id="dio-nuis" checked><span class="slider-sw"></span></label>
+      </div>
+      <div class="toggle-row">
+        <div><span class="toggle-label">Évacuation déchets biologiques</span><span class="toggle-sub">+400 € forfait</span></div>
+        <label class="switch"><input type="checkbox" id="dio-bio" checked><span class="slider-sw"></span></label>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Paramètres chantier</h2>
+      <div class="field-row">
+        <div class="field">
+          <label>Étages</label>
+          <input type="number" id="dio-etages" value="0" min="0" max="10" step="1" inputmode="numeric">
+        </div>
+        <div class="field">
+          <label>Ascenseur</label>
+          <select id="dio-asc"><option value="1">Oui</option><option value="0" selected>Non</option></select>
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Déplacement (km)</label>
+          <input type="number" id="dio-dep" value="20" min="0" step="1" inputmode="numeric">
+        </div>
+        <div class="field">
+          <label>Déchetterie (km)</label>
+          <input type="number" id="dio-dec" value="8" min="0" step="1" inputmode="numeric">
+        </div>
+      </div>
+      <div class="toggle-row">
+        <div><span class="toggle-label">Urgence &lt; 48h</span><span class="toggle-sub">+20% sur total HT</span></div>
+        <label class="switch"><input type="checkbox" id="dio-urg"><span class="slider-sw"></span></label>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== TERRASSEMENT ===== -->
+  <div id="pole-terrassement" class="hidden">
+    <div class="card">
+      <h2>Prestation principale</h2>
+      <div class="field">
+        <label>Type de travaux</label>
+        <select id="ter-type" onchange="updateTerUnit()">
+          <option value="10|m²">Décaissement 0-20 cm — 10 €/m²</option>
+          <option value="14|m²">Décaissement 20-40 cm — 14 €/m²</option>
+          <option value="20|m²">Décaissement 40-60 cm — 20 €/m²</option>
+          <option value="42.5|m³">Décaissement >60 cm — 42,50 €/m³</option>
+          <option value="40|m³">Terrassement général pelle — 40 €/m³</option>
+          <option value="100|m³">Terrassement rocheux — 100 €/m³</option>
+          <option value="50|m³">Fouilles pour fondations — 50 €/m³</option>
+          <option value="17.5|m³">Remblaiement compacté — 17,50 €/m³</option>
+          <option value="10|m²">Nivellement terrain — 10 €/m²</option>
+          <option value="30|ml">Tranchée réseaux — 30 €/ml</option>
+        </select>
+      </div>
+      <div class="field">
+        <label id="ter-qty-label">Quantité (m²)</label>
+        <input type="number" id="ter-qty" value="100" min="1" step="1" inputmode="numeric">
+      </div>
+    </div>
+    <div class="card">
+      <h2>Évacuation &amp; matériel</h2>
+      <div class="toggle-row">
+        <div><span class="toggle-label">Évacuation terres inertes</span><span class="toggle-sub">17 €/m³</span></div>
+        <label class="switch"><input type="checkbox" id="ter-evac" onchange="toggleField('ter-evac-wrap',this.checked)"><span class="slider-sw"></span></label>
+      </div>
+      <div class="field hidden" id="ter-evac-wrap" style="padding-top:8px">
+        <label>Volume à évacuer (m³)</label>
+        <input type="number" id="ter-evac-qty" value="20" min="1" step="1" inputmode="numeric">
+      </div>
+      <div class="toggle-row">
+        <div><span class="toggle-label">Location benne 8m³</span><span class="toggle-sub">400 € / benne</span></div>
+        <label class="switch"><input type="checkbox" id="ter-benne" onchange="toggleField('ter-benne-wrap',this.checked)"><span class="slider-sw"></span></label>
+      </div>
+      <div class="field hidden" id="ter-benne-wrap" style="padding-top:8px">
+        <label>Nombre de bennes</label>
+        <input type="number" id="ter-benne-qty" value="1" min="1" step="1" inputmode="numeric">
+      </div>
+      <div class="toggle-row">
+        <div><span class="toggle-label">Installation chantier</span><span class="toggle-sub">+300 € forfait</span></div>
+        <label class="switch"><input type="checkbox" id="ter-install"><span class="slider-sw"></span></label>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Paramètres chantier</h2>
+      <div class="field-row">
+        <div class="field">
+          <label>Déplacement (km)</label>
+          <input type="number" id="ter-dep" value="20" min="0" step="1" inputmode="numeric">
+        </div>
+        <div class="field">
+          <label>Déchetterie (km)</label>
+          <input type="number" id="ter-dec" value="8" min="0" step="1" inputmode="numeric">
+        </div>
+      </div>
+      <div class="toggle-row">
+        <div><span class="toggle-label">Urgence &lt; 48h</span><span class="toggle-sub">+20% sur total HT</span></div>
+        <label class="switch"><input type="checkbox" id="ter-urg"><span class="slider-sw"></span></label>
+      </div>
+    </div>
+  </div>
+
+  <button class="calc-btn" onclick="calcDevis()">Calculer l'estimation</button>
+
+  <div class="result" id="result-box">
+    <div class="res-pole" id="res-pole">Débarras classique</div>
+    <div class="res-ht" id="res-ht">—</div>
+    <div class="res-ttc" id="res-ttc">—</div>
+    <div class="res-lines" id="res-lines"></div>
+    <div class="res-warn" id="res-warn"></div>
+    <div class="share-bar">
+      <button class="share-btn" onclick="copyResult()">📋 Copier</button>
+      <button class="share-btn" onclick="shareWhatsApp()">💬 WhatsApp</button>
+    </div>
+  </div>
+
+</div>
+<script>
+var currentPole='classique';
+var lastResultText='';
+
+function setPole(p,el){
+  currentPole=p;
+  document.querySelectorAll('.pole-tab').forEach(function(t){t.classList.remove('active');});
+  el.classList.add('active');
+  ['classique','tac','diogene','terrassement'].forEach(function(id){
+    var d=document.getElementById('pole-'+id);
+    if(d) d.classList.toggle('hidden',id!==p);
+  });
+  document.getElementById('result-box').classList.remove('show');
+}
+
+document.querySelectorAll('.chips').forEach(function(group){
+  group.querySelectorAll('.chip').forEach(function(chip){
+    chip.addEventListener('click',function(){
+      group.querySelectorAll('.chip').forEach(function(c){c.classList.remove('sel');});
+      chip.classList.add('sel');
+    });
+  });
+});
+
+function toggleField(id,show){
+  document.getElementById(id).classList.toggle('hidden',!show);
+}
+
+function updateTerUnit(){
+  var val=document.getElementById('ter-type').value;
+  var unit=val.split('|')[1]||'m²';
+  document.getElementById('ter-qty-label').textContent='Quantité ('+unit+')';
+}
+
+function getVal(id){var e=document.getElementById(id);return e?parseFloat(e.value)||0:0;}
+function getCheck(id){var e=document.getElementById(id);return e?e.checked:false;}
+function getChip(gid){var s=document.querySelector('#'+gid+' .chip.sel');return s?parseFloat(s.dataset.val):0;}
+function fmt(n){return Math.round(n).toLocaleString('fr-FR')+' €';}
+
+function majDep(dep,dec){
+  var lines=[],total=0;
+  if(dep>=30){var s=(dep-30)*2;total+=s;lines.push({l:'Déplacement '+dep+' km (supp. aller-retour)',v:fmt(s)});}
+  else{lines.push({l:'Déplacement '+dep+' km',v:'inclus',t:'incl'});}
+  if(dec>10){var s2=(dec-10)*2;total+=s2;lines.push({l:'Déchetterie '+dec+' km (supp.)',v:fmt(s2)});}
+  else{lines.push({l:'Déchetterie '+dec+' km',v:'inclus',t:'incl'});}
+  return{total:total,lines:lines};
+}
+
+function buildResultText(pole,ht,ttc,lines){
+  var t='=== HORIZON DÉMOLITION ===\n';
+  t+='Devis rapide — '+pole+'\n';
+  t+=new Date().toLocaleDateString('fr-FR')+'\n\n';
+  lines.forEach(function(l){
+    var pad=l.l.length<35?Array(35-l.l.length).fill(' ').join(''):'';
+    t+=l.l+pad+l.v+'\n';
+  });
+  t+='\nTOTAL HT : '+fmt(ht)+'\nTOTAL TTC : '+fmt(ttc)+'\n';
+  t+='\nTarifs indicatifs. Devis définitif après visite.\nHorizon Démolition — 07 43 62 64 70';
+  return t;
+}
+
+function showResult(poleLabel,ht,lines,warn){
+  var ttc=Math.round(ht*1.2);
+  lastResultText=buildResultText(poleLabel,ht,ttc,lines);
+  document.getElementById('res-pole').textContent=poleLabel;
+  document.getElementById('res-ht').textContent=fmt(ht)+' HT';
+  document.getElementById('res-ttc').textContent=fmt(ttc)+' TTC (TVA 20%)';
+  var html='';
+  lines.forEach(function(l,i){
+    var cls='rv'+(l.t==='incl'?' incl':i===lines.length-1?' main':'');
+    html+='<div class="res-line"><span class="rl">'+l.l+'</span><span class="'+cls+'">'+l.v+'</span></div>';
+  });
+  document.getElementById('res-lines').innerHTML=html;
+  document.getElementById('res-warn').textContent=warn||'';
+  var box=document.getElementById('result-box');
+  box.classList.add('show');
+  setTimeout(function(){box.scrollIntoView({behavior:'smooth',block:'nearest'});},100);
+}
+
+function copyResult(){
+  navigator.clipboard.writeText(lastResultText).then(function(){
+    var btn=event.currentTarget;
+    btn.textContent='✅ Copié !';
+    setTimeout(function(){btn.textContent='📋 Copier';},2000);
+  }).catch(function(){alert('Copie non disponible sur ce navigateur.');});
+}
+
+function shareWhatsApp(){
+  var url='https://wa.me/?text='+encodeURIComponent(lastResultText);
+  window.open(url,'_blank');
+}
+
+function calcDevis(){
+  if(currentPole==='classique') calcClassique();
+  else if(currentPole==='tac') calcTac();
+  else if(currentPole==='diogene') calcDiogene();
+  else if(currentPole==='terrassement') calcTerrassement();
+}
+
+function calcClassique(){
+  var s=getVal('cl-surface');
+  var enc=getChip('cl-enc');
+  var net=getChip('cl-net');
+  var etages=getVal('cl-etages');
+  var asc=document.getElementById('cl-asc').value==='1';
+  var dep=getVal('cl-dep');
+  var dec=getVal('cl-dec');
+  var urg=getCheck('cl-urg');
+  var lines=[];
+
+  var base=Math.max(300,s*enc);
+  var isMin=s*enc<300;
+  lines.push({l:'Surface '+s+' m² × '+enc+' €/m²',v:isMin?'Forfait min 300 €':fmt(base),t:isMin?'incl':''});
+
+  var etSupp=0;
+  if(etages>0&&!asc){etSupp=Math.round(base*0.08*etages);lines.push({l:etages+' étage(s) sans ascenseur (+8%)',v:fmt(etSupp)});}
+  else if(etages>0&&asc){lines.push({l:etages+' étage(s) avec ascenseur',v:'inclus',t:'incl'});}
+
+  var netSupp=net>0?Math.round(s*net):0;
+  if(netSupp>0)lines.push({l:'Nettoyage finition '+s+' m² × '+net+' €',v:fmt(netSupp)});
+
+  var maj=majDep(dep,dec);
+  maj.lines.forEach(function(l){lines.push(l);});
+
+  var st=base+etSupp+netSupp+maj.total;
+  var urgSupp=0;
+  if(urg){urgSupp=Math.round(st*0.2);lines.push({l:'Urgence < 48h (+20%)',v:fmt(urgSupp)});}
+  var total=st+urgSupp;
+  lines.push({l:'TOTAL ESTIMÉ H.T.',v:fmt(total)});
+  showResult('Débarras classique',total,lines,'Tarifs indicatifs HT · Déplacement calculé aller+retour · Devis définitif après visite ou photos.');
+}
+
+function calcTac(){
+  var s=getVal('tac-surface');
+  var enc=getChip('tac-enc');
+  var sal=getChip('tac-sal');
+  var etages=getVal('tac-etages');
+  var asc=document.getElementById('tac-asc').value==='1';
+  var dep=getVal('tac-dep');
+  var dec=getVal('tac-dec');
+  var urg=getCheck('tac-urg');
+  var lines=[];
+
+  var base=Math.max(600,s*enc);
+  var isMin=s*enc<600;
+  lines.push({l:'Encombrement '+s+' m² × '+enc+' €',v:isMin?'Forfait min 600 €':fmt(base),t:isMin?'incl':''});
+
+  if(sal>0){var sv=Math.round(s*sal);lines.push({l:'Saleté '+s+' m² × '+sal+' €',v:fmt(sv)});base+=sv;}
+
+  var etSupp=0;
+  if(etages>0&&!asc){etSupp=Math.round(Math.max(600,s*enc)*0.08*etages);lines.push({l:etages+' étage(s) sans ascenseur',v:fmt(etSupp)});}
+
+  var opts=0;
+  if(getCheck('tac-desinf')){var v=Math.round(s*14);opts+=v;lines.push({l:'Désinfection / désodorisation '+s+' m²',v:fmt(v)});}
+  if(getCheck('tac-nett')){var v=Math.round(s*10.5);opts+=v;lines.push({l:'Nettoyage profond sol/murs '+s+' m²',v:fmt(v)});}
+  if(getCheck('tac-nuis')){opts+=350;lines.push({l:'Anti-nuisibles',v:'350 €'});}
+  if(getCheck('tac-bio')){opts+=275;lines.push({l:'Déchets biologiques',v:'275 €'});}
+
+  var maj=majDep(dep,dec);
+  maj.lines.forEach(function(l){lines.push(l);});
+
+  var st=base+etSupp+opts+maj.total;
+  var urgSupp=0;
+  if(urg){urgSupp=Math.round(st*0.2);lines.push({l:'Urgence < 48h (+20%)',v:fmt(urgSupp)});}
+  var total=st+urgSupp;
+  lines.push({l:'TOTAL ESTIMÉ H.T.',v:fmt(total)});
+  showResult('Débarras TAC',total,lines,'Diagnostic déduit si intervention acceptée · Devis définitif après visite.');
+}
+
+function calcDiogene(){
+  var s=getVal('dio-surface');
+  var enc=getChip('dio-enc');
+  var sal=getChip('dio-sal');
+  var etages=getVal('dio-etages');
+  var asc=document.getElementById('dio-asc').value==='1';
+  var dep=getVal('dio-dep');
+  var dec=getVal('dio-dec');
+  var urg=getCheck('dio-urg');
+  var lines=[];
+
+  var baseEnc=Math.max(1200,s*enc);
+  var isMin=s*enc<1200;
+  lines.push({l:'Encombrement '+s+' m² × '+enc+' €',v:isMin?'Forfait min 1 200 €':fmt(baseEnc),t:isMin?'incl':''});
+
+  var salV=Math.round(s*sal);
+  lines.push({l:'Saleté '+s+' m² × '+sal+' €',v:fmt(salV)});
+
+  var etSupp=0;
+  if(etages>0&&!asc){etSupp=Math.round(Math.max(1200,s*enc)*0.08*etages);lines.push({l:etages+' étage(s) sans ascenseur',v:fmt(etSupp)});}
+
+  var opts=0;
+  if(getCheck('dio-desinf')){var v=Math.round(s*15);opts+=v;lines.push({l:'Désinfection totale '+s+' m²',v:fmt(v)});}
+  if(getCheck('dio-ozone')){var v=Math.round(s*20);opts+=v;lines.push({l:'Désodorisation ozone '+s+' m²',v:fmt(v)});}
+  if(getCheck('dio-nuis')){opts+=500;lines.push({l:'Anti-nuisibles',v:'500 €'});}
+  if(getCheck('dio-bio')){opts+=400;lines.push({l:'Déchets biologiques',v:'400 €'});}
+
+  var maj=majDep(dep,dec);
+  maj.lines.forEach(function(l){lines.push(l);});
+
+  var st=baseEnc+salV+etSupp+opts+maj.total;
+  var urgSupp=0;
+  if(urg){urgSupp=Math.round(st*0.2);lines.push({l:'Urgence < 48h (+20%)',v:fmt(urgSupp)});}
+  var total=st+urgSupp;
+  lines.push({l:'TOTAL ESTIMÉ H.T.',v:fmt(total)});
+  showResult('Diogène',total,lines,'Estimation indicative · Diagnostic obligatoire avant devis définitif · Intervention multi-jours probable.');
+}
+
+function calcTerrassement(){
+  var typeVal=document.getElementById('ter-type').value;
+  var parts=typeVal.split('|');
+  var tarif=parseFloat(parts[0]);
+  var unit=parts[1]||'m²';
+  var qty=getVal('ter-qty');
+  var dep=getVal('ter-dep');
+  var dec=getVal('ter-dec');
+  var urg=getCheck('ter-urg');
+  var label=document.getElementById('ter-type').options[document.getElementById('ter-type').selectedIndex].text.split('—')[0].trim();
+  var lines=[];
+
+  var base=Math.round(qty*tarif);
+  lines.push({l:label+' · '+qty+' '+unit+' × '+tarif+' €',v:fmt(base)});
+
+  var evacV=0;
+  if(getCheck('ter-evac')){var eq=getVal('ter-evac-qty');evacV=Math.round(eq*17);lines.push({l:'Évacuation terres '+eq+' m³ × 17 €',v:fmt(evacV)});}
+  var benneV=0;
+  if(getCheck('ter-benne')){var nb=getVal('ter-benne-qty');benneV=nb*400;lines.push({l:nb+' benne(s) 8m³ × 400 €',v:fmt(benneV)});}
+  var installV=0;
+  if(getCheck('ter-install')){installV=300;lines.push({l:'Installation chantier',v:'300 €'});}
+
+  var maj=majDep(dep,dec);
+  maj.lines.forEach(function(l){lines.push(l);});
+
+  var st=base+evacV+benneV+installV+maj.total;
+  var urgSupp=0;
+  if(urg){urgSupp=Math.round(st*0.2);lines.push({l:'Urgence < 48h (+20%)',v:fmt(urgSupp)});}
+  var total=st+urgSupp;
+  lines.push({l:'TOTAL ESTIMÉ H.T.',v:fmt(total)});
+  showResult('Terrassement',total,lines,'Prix moyens indicatifs HT · Devis définitif après visite de chantier.');
+}
+</script>
+</body>
+</html>
