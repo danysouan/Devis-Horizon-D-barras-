@@ -5,7 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>Devis Rapide — Horizon Démolition</title>
+<meta name="apple-mobile-web-app-title" content="Hor-Devis-Debarras">
+<meta name="application-name" content="Hor-Devis-Debarras">
+<meta name="theme-color" content="#0D2B3E">
+<meta name="description" content="Devis rapide terrain — Horizon Démolition">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="manifest" id="manifest-placeholder">
+<title>Hor-Devis-Debarras</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#f2f4f6;color:#1a1a2e;min-height:100vh;padding-bottom:40px}
@@ -87,9 +93,17 @@ input:checked+.slider-sw:before{transform:translateX(20px)}
   <div class="logo-bar">
     <div class="logo-circle">HD</div>
     <div>
-      <h1>Horizon Démolition</h1>
-      <p>Devis rapide terrain — usage interne</p>
+      <h1>Hor-Devis-Débarras</h1>
+      <p>Horizon Démolition — usage interne</p>
     </div>
+  </div>
+
+  <div id="install-banner" style="display:none;align-items:center;justify-content:space-between;background:#0e8a8a;border-radius:10px;padding:10px 14px;margin-bottom:12px;gap:10px">
+    <div>
+      <div style="font-size:13px;font-weight:700;color:#fff">Installer l'appli</div>
+      <div style="font-size:11px;color:rgba(255,255,255,0.8)">Accès rapide depuis votre écran d'accueil</div>
+    </div>
+    <button onclick="installApp()" style="background:#fff;color:#0e8a8a;border:none;border-radius:8px;padding:8px 14px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap">Installer</button>
   </div>
 
   <div class="pole-tabs">
@@ -313,51 +327,158 @@ input:checked+.slider-sw:before{transform:translateX(20px)}
 
   <!-- ===== TERRASSEMENT ===== -->
   <div id="pole-terrassement" class="hidden">
+
+    <!-- 1. SURFACE & PROFONDEUR -->
     <div class="card">
-      <h2>Prestation principale</h2>
-      <div class="field">
-        <label>Type de travaux</label>
-        <select id="ter-type" onchange="updateTerUnit()">
-          <option value="10|m²">Décaissement 0-20 cm — 10 €/m²</option>
-          <option value="14|m²">Décaissement 20-40 cm — 14 €/m²</option>
-          <option value="20|m²">Décaissement 40-60 cm — 20 €/m²</option>
-          <option value="42.5|m³">Décaissement >60 cm — 42,50 €/m³</option>
-          <option value="40|m³">Terrassement général pelle — 40 €/m³</option>
-          <option value="100|m³">Terrassement rocheux — 100 €/m³</option>
-          <option value="50|m³">Fouilles pour fondations — 50 €/m³</option>
-          <option value="17.5|m³">Remblaiement compacté — 17,50 €/m³</option>
-          <option value="10|m²">Nivellement terrain — 10 €/m²</option>
-          <option value="30|ml">Tranchée réseaux — 30 €/ml</option>
-        </select>
+      <h2>Surface &amp; profondeur</h2>
+      <div class="field-row">
+        <div class="field">
+          <label>Surface (m²)</label>
+          <input type="number" id="ter-surface" value="50" min="1" step="1" inputmode="numeric">
+        </div>
+        <div class="field">
+          <label>Profondeur décaissement (cm)</label>
+          <input type="number" id="ter-prof" value="30" min="1" step="1" inputmode="numeric">
+        </div>
       </div>
-      <div class="field">
-        <label id="ter-qty-label">Quantité (m²)</label>
-        <input type="number" id="ter-qty" value="100" min="1" step="1" inputmode="numeric">
+      <div style="margin-top:10px;padding:8px 12px;background:#f0f8f8;border-radius:8px;font-size:12px;color:#2d4050" id="ter-volumes-display">
+        Renseignez la surface et la profondeur pour voir les volumes calculés.
       </div>
     </div>
+
+    <!-- 2. INSTALLATION CHANTIER -->
     <div class="card">
-      <h2>Évacuation &amp; matériel</h2>
+      <h2>Installation &amp; signalisation</h2>
       <div class="toggle-row">
-        <div><span class="toggle-label">Évacuation terres inertes</span><span class="toggle-sub">17 €/m³</span></div>
-        <label class="switch"><input type="checkbox" id="ter-evac" onchange="toggleField('ter-evac-wrap',this.checked)"><span class="slider-sw"></span></label>
-      </div>
-      <div class="field hidden" id="ter-evac-wrap" style="padding-top:8px">
-        <label>Volume à évacuer (m³)</label>
-        <input type="number" id="ter-evac-qty" value="20" min="1" step="1" inputmode="numeric">
+        <div><span class="toggle-label">Installation chantier (demi-journée)</span><span class="toggle-sub">300 € forfait</span></div>
+        <label class="switch"><input type="checkbox" id="ter-install" checked><span class="slider-sw"></span></label>
       </div>
       <div class="toggle-row">
-        <div><span class="toggle-label">Location benne 8m³</span><span class="toggle-sub">400 € / benne</span></div>
-        <label class="switch"><input type="checkbox" id="ter-benne" onchange="toggleField('ter-benne-wrap',this.checked)"><span class="slider-sw"></span></label>
-      </div>
-      <div class="field hidden" id="ter-benne-wrap" style="padding-top:8px">
-        <label>Nombre de bennes</label>
-        <input type="number" id="ter-benne-qty" value="1" min="1" step="1" inputmode="numeric">
-      </div>
-      <div class="toggle-row">
-        <div><span class="toggle-label">Installation chantier</span><span class="toggle-sub">+300 € forfait</span></div>
-        <label class="switch"><input type="checkbox" id="ter-install"><span class="slider-sw"></span></label>
+        <div><span class="toggle-label">Mise en place signalisation</span><span class="toggle-sub">200 € forfait (voie publique)</span></div>
+        <label class="switch"><input type="checkbox" id="ter-signa"><span class="slider-sw"></span></label>
       </div>
     </div>
+
+    <!-- 3. ACCÈS & DÉCAISSEMENT -->
+    <div class="card">
+      <h2>Accès chantier &amp; décaissement</h2>
+      <div class="field">
+        <label>Accès au chantier</label>
+        <div class="chips" id="ter-acces">
+          <div class="chip sel" data-val="facile">Facile</div>
+          <div class="chip" data-val="complique">Compliqué</div>
+          <div class="chip" data-val="difficile">Difficile</div>
+        </div>
+      </div>
+      <div style="margin-top:8px;padding:7px 11px;border-radius:6px;font-size:12px;background:#f0f8f8;color:#2d4050" id="ter-acces-info">
+        Facile → mini pelle
+      </div>
+    </div>
+
+    <!-- 4. ÉVACUATION & BENNES -->
+    <div class="card">
+      <h2>Évacuation des terres</h2>
+      <div class="toggle-row">
+        <div><span class="toggle-label">Évacuation des terres</span><span class="toggle-sub">Benne + éco-taxe calculées automatiquement</span></div>
+        <label class="switch"><input type="checkbox" id="ter-evac" checked onchange="toggleField('ter-evac-wrap',this.checked);updateTerDisplays()"><span class="slider-sw"></span></label>
+      </div>
+      <div id="ter-evac-wrap">
+        <div class="field" style="margin-top:10px">
+          <label>Taille de benne</label>
+          <div class="chips" id="ter-benne-size">
+            <div class="chip sel" data-val="8">8 m³<small>400 €</small></div>
+            <div class="chip" data-val="10">10 m³<small>450 €</small></div>
+            <div class="chip" data-val="12">12 m³<small>480 €</small></div>
+            <div class="chip" data-val="15">15 m³<small>500 €</small></div>
+            <div class="chip" data-val="30">30 m³<small>750 €</small></div>
+          </div>
+        </div>
+        <div style="margin-top:10px;padding:8px 12px;background:#f0f8f8;border-radius:8px;font-size:12px;color:#2d4050" id="ter-bennes-display">
+          Le nombre de rotations sera calculé automatiquement.
+        </div>
+      </div>
+      <div id="ter-noevac-info" class="hidden" style="margin-top:8px;padding:7px 11px;background:#faeeda;border-radius:6px;font-size:12px;color:#633806">
+        Sans évacuation — les terres restent stockées sur site.
+      </div>
+    </div>
+
+    <!-- 5. GÉOTEXTILE -->
+    <div class="card">
+      <h2>Géotextile</h2>
+      <div class="toggle-row">
+        <div><span class="toggle-label">Pose géotextile (rouleaux 2×25 m = 50 m²)</span><span class="toggle-sub">Rouleau 90 € · pose 1,20 €/ml · +20% superposition</span></div>
+        <label class="switch"><input type="checkbox" id="ter-geo"><span class="slider-sw"></span></label>
+      </div>
+      <div id="ter-geo-info" class="hidden" style="margin-top:8px;padding:7px 11px;background:#e8f5f5;border-radius:6px;font-size:12px;color:#085041"></div>
+    </div>
+
+    <!-- 6. GRAVE -->
+    <div class="card">
+      <h2>Apport de grave calcaire (0/31,5)</h2>
+      <div class="toggle-row">
+        <div><span class="toggle-label">Apport de grave calcaire (0/31,5)</span><span class="toggle-sub">9,50 €HT/m² par 10 cm · densité 1,8 T/m³</span></div>
+        <label class="switch"><input type="checkbox" id="ter-grave" onchange="toggleField('ter-grave-wrap',this.checked);updateTerDisplays()"><span class="slider-sw"></span></label>
+      </div>
+      <div class="hidden" id="ter-grave-wrap" style="padding-top:10px">
+        <div class="toggle-row" style="padding-top:0">
+          <div><span class="toggle-label">Fourniture client</span><span class="toggle-sub">MO seule : étalement 4 €/m² · compactage 3 €/m²</span></div>
+          <label class="switch"><input type="checkbox" id="ter-grave-fourni" onchange="updateTerDisplays()"><span class="slider-sw"></span></label>
+        </div>
+        <div class="field" style="margin-top:8px">
+          <label>Épaisseur de grave (cm) — min 10 cm</label>
+          <input type="number" id="ter-grave-ep" value="10" min="10" step="5" inputmode="numeric">
+        </div>
+        <div id="ter-grave-info" style="margin-top:8px;padding:7px 11px;background:#e8f5f5;border-radius:6px;font-size:12px;color:#085041"></div>
+      </div>
+    </div>
+
+    <!-- 7. GRAVIER + DALLE STABILISATRICE -->
+    <div class="card">
+      <h2>Apport de gravier &amp; finition</h2>
+      <div class="toggle-row">
+        <div><span class="toggle-label">Apport de gravier (4/12)</span><span class="toggle-sub">Prix modifiable · densité 1,5 T/m³</span></div>
+        <label class="switch"><input type="checkbox" id="ter-gravier" onchange="toggleField('ter-gravier-wrap',this.checked);updateTerDisplays()"><span class="slider-sw"></span></label>
+      </div>
+      <div class="hidden" id="ter-gravier-wrap" style="padding-top:10px">
+        <div class="toggle-row" style="padding-top:0">
+          <div><span class="toggle-label">Fourniture client</span><span class="toggle-sub">MO seule : étalement 4 €/m² · compactage 3 €/m²</span></div>
+          <label class="switch"><input type="checkbox" id="ter-gravier-fourni" onchange="updateTerDisplays()"><span class="slider-sw"></span></label>
+        </div>
+        <div class="field-row" style="margin-top:8px">
+          <div class="field">
+            <label>Épaisseur gravier (cm) — min 4 cm</label>
+            <input type="number" id="ter-gravier-ep" value="6" min="4" step="1" inputmode="numeric">
+          </div>
+          <div class="field" id="ter-gravier-prix-wrap">
+            <label>Prix gravier HT/m² (modifiable)</label>
+            <input type="number" id="ter-gravier-prix" value="6" min="1" step="0.1" inputmode="decimal">
+          </div>
+        </div>
+        <div id="ter-gravier-info" style="margin-top:8px;padding:7px 11px;background:#e8f5f5;border-radius:6px;font-size:12px;color:#085041"></div>
+
+        <!-- DALLE STABILISATRICE dans le bloc gravier -->
+        <div style="margin-top:10px;border-top:0.5px solid #d0e8e8;padding-top:10px">
+          <div class="toggle-row" style="padding-top:0">
+            <div><span class="toggle-label">Dalle stabilisatrice (160×120 cm)</span><span class="toggle-sub">30 € / dalle fourniture · MO pose incluse</span></div>
+            <label class="switch"><input type="checkbox" id="ter-dalle" onchange="updateTerDisplays()"><span class="slider-sw"></span></label>
+          </div>
+          <input type="hidden" id="ter-dalle-mo" value="5">
+          <div id="ter-dalle-info" class="hidden" style="margin-top:8px;padding:7px 11px;background:#e8f5f5;border-radius:6px;font-size:12px;color:#085041"></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- 8. REPLI -->
+    <div class="card">
+      <h2>Repli &amp; fin de chantier</h2>
+      <div class="toggle-row">
+        <div><span class="toggle-label">Repli de chantier</span><span class="toggle-sub">250 € forfait</span></div>
+        <label class="switch"><input type="checkbox" id="ter-repli" checked><span class="slider-sw"></span></label>
+      </div>
+    </div>
+
+    <!-- 9. PARAMÈTRES -->
     <div class="card">
       <h2>Paramètres chantier</h2>
       <div class="field-row">
@@ -388,6 +509,44 @@ input:checked+.slider-sw:before{transform:translateX(20px)}
     <div class="share-bar">
       <button class="share-btn" onclick="copyResult()">📋 Copier</button>
       <button class="share-btn" onclick="shareWhatsApp()">💬 WhatsApp</button>
+    </div>
+  </div>
+
+  <div id="marge-box" class="hidden">
+    <div class="card" style="margin-top:10px;border-top:3px solid #0e8a8a">
+      <h2 id="mg-title">Calcul de marge</h2>
+
+      <!-- Temps & salariés -->
+      <div class="field-row" style="margin-top:10px">
+        <div class="field">
+          <label>Durée chantier (jours)</label>
+          <input type="number" id="mg-jours" value="1" min="0.5" step="0.5" inputmode="decimal" oninput="calcMarge()">
+        </div>
+        <div class="field">
+          <label>Nombre de salariés</label>
+          <input type="number" id="mg-salaries" value="2" min="1" step="1" inputmode="numeric" oninput="calcMarge()">
+        </div>
+      </div>
+      <div class="field">
+        <label>Salaire net mensuel / salarié (€) — coût employeur calculé auto</label>
+        <input type="number" id="mg-salaire" value="1500" min="0" step="50" inputmode="numeric" oninput="calcMarge()">
+      </div>
+
+      <!-- Charges achat matériaux (saisie libre) -->
+      <div id="mg-achats-wrap" style="margin-top:12px;padding-top:10px;border-top:1px dashed #d0e8e8">
+        <div style="font-size:11px;font-weight:700;color:#0e8a8a;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px">Charges achat matériaux</div>
+        <div id="mg-achats-fields"></div>
+      </div>
+
+      <!-- Résultat -->
+      <div id="mg-result" style="margin-top:12px;border-radius:8px;overflow:hidden;border:1px solid #d0e8e8">
+        <div style="background:#f7fafc;padding:10px 14px;font-size:12px;color:#2d4050;line-height:2" id="mg-charges-list"></div>
+        <div style="background:#0D2B3E;padding:12px 14px">
+          <div style="font-size:10px;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:0.5px">Marge estimée H.T.</div>
+          <div id="mg-marge-val" style="font-size:28px;font-weight:700;color:#fff;margin-top:2px">—</div>
+          <div id="mg-pct-val" style="font-size:12px;margin-top:4px">—</div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -428,7 +587,7 @@ function updateTerUnit(){
 
 function getVal(id){var e=document.getElementById(id);return e?parseFloat(e.value)||0:0;}
 function getCheck(id){var e=document.getElementById(id);return e?e.checked:false;}
-function getChip(gid){var s=document.querySelector('#'+gid+' .chip.sel');return s?parseFloat(s.dataset.val):0;}
+function getChip(gid){var s=document.querySelector('#'+gid+' .chip.sel');if(!s)return null;var v=s.dataset.val;var n=parseFloat(v);return isNaN(n)?v:n;}
 function fmt(n){return Math.round(n).toLocaleString('fr-FR')+' €';}
 
 function majDep(dep,dec){
@@ -522,6 +681,16 @@ function calcClassique(){
   var total=st+urgSupp;
   lines.push({l:'TOTAL ESTIMÉ H.T.',v:fmt(total)});
   showResult('Débarras classique',total,lines,'Tarifs indicatifs HT · Déplacement calculé aller+retour · Devis définitif après visite ou photos.');
+  window.terMargeData = {
+    pole: 'classique', ca: total,
+    achats: [
+      {label:'Produits nettoyage / consommables', id:'mg-a-produits', val: net>0?Math.round(s*1.5):0}
+    ]
+  };
+  document.getElementById('marge-box').classList.remove('hidden');
+  document.getElementById('mg-title').textContent='Calcul de marge — Débarras classique';
+  buildMargeAchats();
+  calcMarge();
 }
 
 function calcTac(){
@@ -559,6 +728,21 @@ function calcTac(){
   var total=st+urgSupp;
   lines.push({l:'TOTAL ESTIMÉ H.T.',v:fmt(total)});
   showResult('Débarras TAC',total,lines,'Diagnostic déduit si intervention acceptée · Devis définitif après visite.');
+  var achProdTac=0;
+  if(getCheck('tac-desinf')) achProdTac+=Math.round(s*3);
+  if(getCheck('tac-nett')) achProdTac+=Math.round(s*2);
+  if(getCheck('tac-nuis')) achProdTac+=180;
+  if(getCheck('tac-bio')) achProdTac+=120;
+  window.terMargeData = {
+    pole: 'tac', ca: total,
+    achats: [
+      {label:'Produits désinfection / consommables', id:'mg-a-produits', val: achProdTac}
+    ]
+  };
+  document.getElementById('marge-box').classList.remove('hidden');
+  document.getElementById('mg-title').textContent='Calcul de marge — Débarras TAC';
+  buildMargeAchats();
+  calcMarge();
 }
 
 function calcDiogene(){
@@ -597,39 +781,455 @@ function calcDiogene(){
   var total=st+urgSupp;
   lines.push({l:'TOTAL ESTIMÉ H.T.',v:fmt(total)});
   showResult('Diogène',total,lines,'Estimation indicative · Diagnostic obligatoire avant devis définitif · Intervention multi-jours probable.');
+  var achProdDio=0;
+  if(getCheck('dio-desinf')) achProdDio+=Math.round(s*4);
+  if(getCheck('dio-ozone')) achProdDio+=Math.round(s*5);
+  if(getCheck('dio-nuis')) achProdDio+=280;
+  if(getCheck('dio-bio')) achProdDio+=180;
+  window.terMargeData = {
+    pole: 'diogene', ca: total,
+    achats: [
+      {label:'Produits désinfection / ozone / consommables', id:'mg-a-produits', val: achProdDio}
+    ]
+  };
+  document.getElementById('marge-box').classList.remove('hidden');
+  document.getElementById('mg-title').textContent='Calcul de marge — Diogene';
+  buildMargeAchats();
+  calcMarge();
 }
 
+function updateTerDisplays(){
+  var surface=getVal('ter-surface')||0;
+  var profCm=getVal('ter-prof')||0;
+  var profM=profCm/100;
+  var acces=getChip('ter-acces');
+  var tarifDec=profCm<=20?10:profCm<=40?14:profCm<=60?20:42.5;
+  var labelDec=profCm<=20?'0-20 cm':profCm<=40?'20-40 cm':profCm<=60?'40-60 cm':'>60 cm';
+  var m3brut=surface*profM;
+  var m3foisonne=m3brut*1.3;
+
+  document.getElementById('ter-volumes-display').innerHTML=
+    '<b>Décaissement '+labelDec+' → '+tarifDec+' €/m²</b><br>'+
+    'Volume brut : '+m3brut.toFixed(2)+' m³ · Après foisonnement +30% : <b>'+m3foisonne.toFixed(2)+' m³</b>';
+
+  var accesEl=document.getElementById('ter-acces-info');
+  if(acces==='facile'){
+    accesEl.style.background='#eaf3de';accesEl.style.color='#27500A';
+    accesEl.textContent='Facile → mini pelle · '+tarifDec+' €/m² · Total : '+Math.round(surface*tarifDec)+' €';
+  } else if(acces==='complique'){
+    accesEl.style.background='#faeeda';accesEl.style.color='#633806';
+    accesEl.textContent='Compliqué → manuel +20% · '+(tarifDec*1.2).toFixed(2)+' €/m² · Total : '+Math.round(surface*tarifDec*1.2)+' €';
+  } else {
+    accesEl.style.background='#fcebeb';accesEl.style.color='#791F1F';
+    accesEl.textContent='Difficile → manuel +40% · '+(tarifDec*1.4).toFixed(2)+' €/m² · Total : '+Math.round(surface*tarifDec*1.4)+' €';
+  }
+
+  var noevacInfo=document.getElementById('ter-noevac-info');
+  if(getCheck('ter-evac')){
+    if(noevacInfo) noevacInfo.classList.add('hidden');
+    var benneSize=parseFloat(getChip('ter-benne-size'))||8;
+    var bennePrix={8:400,10:450,12:480,15:500,30:750};
+    var prix=bennePrix[benneSize]||400;
+    var nbRotations=Math.ceil(m3foisonne/(benneSize*0.8));
+    var dispEl=document.getElementById('ter-bennes-display');
+    if(dispEl) dispEl.innerHTML=
+      'Volume foisonné : <b>'+m3foisonne.toFixed(2)+' m³</b> · Benne '+benneSize+' m³ utiles : '+Math.round(benneSize*0.8)+' m³<br>'+
+      '<b>'+nbRotations+' rotation(s)</b> × '+prix+' € = <b>'+(nbRotations*prix)+' €</b> · Éco-taxe : ~'+(nbRotations*14)+' €';
+  } else {
+    if(noevacInfo) noevacInfo.classList.remove('hidden');
+  }
+
+  var geoInfo=document.getElementById('ter-geo-info');
+  if(getCheck('ter-geo')){
+    var surfGeo=surface*1.2;
+    var nbRouleaux=Math.ceil(surfGeo/50);
+    var costRouleaux=nbRouleaux*90;
+    var ml=surfGeo/2;
+    var costPose=Math.round(ml*1.2);
+    geoInfo.classList.remove('hidden');
+    geoInfo.innerHTML='Surface +20% superposition : <b>'+surfGeo.toFixed(1)+' m²</b><br>'+
+      'Rouleaux 2×25 m : <b>'+nbRouleaux+'</b> × 90 € = '+costRouleaux+' € · Pose '+ml.toFixed(0)+' ml × 1,20 € = '+costPose+' €<br>'+
+      '<b>Total : '+(costRouleaux+costPose)+' €</b>';
+  } else { geoInfo.classList.add('hidden'); }
+
+  var graveInfo=document.getElementById('ter-grave-info');
+  if(getCheck('ter-grave')&&graveInfo){
+    var graveEpCm=getVal('ter-grave-ep')||10;
+    var graveM3=surface*(graveEpCm/100);
+    var graveTons=(graveM3*1.8).toFixed(1);
+    var nbCouches=Math.ceil(graveEpCm/10);
+    var graveFourni=getCheck('ter-grave-fourni');
+    if(graveFourni){
+      var costEtalement=Math.round(surface*4);
+      var costCompact=Math.round(surface*nbCouches*3);
+      graveInfo.innerHTML='<b>Fourniture client</b> — MO seule<br>'+
+        'Étalement : '+surface+' m² × 4 € = '+costEtalement+' €<br>'+
+        'Compactage : '+nbCouches+' × '+surface+' m² × 3 €/m² = '+costCompact+' €<br>'+
+        '<b>Total MO : '+(costEtalement+costCompact)+' €</b> (fourniture non incluse)';
+    } else {
+      var prixGrave=9.5*(graveEpCm/10);
+      var costGrave=Math.round(surface*prixGrave);
+      var costEtalement=Math.round(surface*4);
+      var costCompact=Math.round(surface*nbCouches*3);
+      graveInfo.innerHTML='Volume : <b>'+graveM3.toFixed(2)+' m³ / '+graveTons+' T</b> · '+prixGrave.toFixed(2)+' €/m² · Grave : '+costGrave+' €<br>'+
+        'Étalement : '+surface+' m² × 4 € = '+costEtalement+' € · Compactage : '+nbCouches+' × '+surface+' m² × 3 €/m² = '+costCompact+' €<br>'+
+        '<b>Total : '+(costGrave+costEtalement+costCompact)+' €</b>';
+    }
+  } else if(graveInfo){graveInfo.innerHTML='';}
+
+  var gravierInfo=document.getElementById('ter-gravier-info');
+  var gravierPrixWrap=document.getElementById('ter-gravier-prix-wrap');
+  if(getCheck('ter-gravier')&&gravierInfo){
+    var gravierEpCm=getVal('ter-gravier-ep')||6;
+    var gravierM3=surface*(gravierEpCm/100);
+    var gravierTons=(gravierM3*1.5).toFixed(1);
+    var gravierFourni=getCheck('ter-gravier-fourni');
+    if(gravierPrixWrap) gravierPrixWrap.style.display=gravierFourni?'none':'';
+    if(gravierFourni){
+      var costEtalement=Math.round(surface*4);
+      var nbCouchesGF=Math.ceil(gravierEpCm/10);
+      var costCG=Math.round(surface*nbCouchesGF*3);
+      gravierInfo.innerHTML='<b>Fourniture client</b> — MO seule<br>'+
+        'Étalement : '+surface+' m² × 4 € = '+costEtalement+' € · Compactage : '+nbCouchesGF+' × '+surface+' m² × 3 € = '+costCG+' €<br>'+
+        '<b>Total MO : '+(costEtalement+costCG)+' €</b> (fourniture non incluse)';
+    } else {
+      var prixGravier=parseFloat(document.getElementById('ter-gravier-prix').value)||6;
+      var prixTotal=prixGravier*(gravierEpCm/4);
+      var costGravier=Math.round(surface*prixTotal);
+      var costEtalement=Math.round(surface*4);
+      var nbCouchesG=Math.ceil(gravierEpCm/10);
+      var costCG=Math.round(surface*nbCouchesG*3);
+      gravierInfo.innerHTML='Volume : <b>'+gravierM3.toFixed(2)+' m³ / '+gravierTons+' T</b> · '+prixTotal.toFixed(2)+' €/m² · Gravier : '+costGravier+' €<br>'+
+        'Étalement : '+surface+' m² × 4 € = '+costEtalement+' € · Compactage : '+nbCouchesG+' × '+surface+' m² × 3 € = '+costCG+' €<br>'+
+        '<b>Total : '+(costGravier+costEtalement+costCG)+' €</b>';
+    }
+  } else if(gravierInfo){gravierInfo.innerHTML='';}
+
+  var dalleInfo=document.getElementById('ter-dalle-info');
+  if(dalleInfo){
+    if(getCheck('ter-dalle')&&getCheck('ter-gravier')){
+      var nbDalles=Math.ceil(surface/1.92);
+      var moDalle=parseFloat(document.getElementById('ter-dalle-mo').value)||5;
+      var costDalle=nbDalles*30;
+      var costMoDalle=nbDalles*moDalle;
+      dalleInfo.classList.remove('hidden');
+      dalleInfo.innerHTML='1 dalle = 1,92 m² · <b>'+nbDalles+' dalles</b><br>'+
+        'Fourniture : '+nbDalles+' × 30 € = '+costDalle+' €<br>'+
+        'MO pose : '+nbDalles+' × '+moDalle+' € = '+costMoDalle+' €<br>'+
+        '<b>Total dalles : '+(costDalle+costMoDalle)+' €</b>';
+    } else {dalleInfo.classList.add('hidden');}
+  }
+}
+
+// Listeners automatiques
+document.addEventListener('DOMContentLoaded', function(){
+  ['ter-surface','ter-prof','ter-grave-ep','ter-gravier-ep','ter-gravier-prix','ter-dalle-mo'].forEach(function(id){
+    var el=document.getElementById(id);
+    if(el) el.addEventListener('input', updateTerDisplays);
+  });
+  ['ter-geo','ter-grave','ter-gravier','ter-compact-gravier','ter-dalle'].forEach(function(id){
+    var el=document.getElementById(id);
+    if(el) el.addEventListener('change', updateTerDisplays);
+  });
+  document.querySelectorAll('#ter-acces .chip, #ter-benne-size .chip').forEach(function(c){
+    c.addEventListener('click', function(){ setTimeout(updateTerDisplays,10); });
+  });
+  updateTerDisplays();
+});
+
 function calcTerrassement(){
-  var typeVal=document.getElementById('ter-type').value;
-  var parts=typeVal.split('|');
-  var tarif=parseFloat(parts[0]);
-  var unit=parts[1]||'m²';
-  var qty=getVal('ter-qty');
+  var surface=getVal('ter-surface');
+  var profCm=getVal('ter-prof');
+  var profM=profCm/100;
+  var acces=getChip('ter-acces');
   var dep=getVal('ter-dep');
   var dec=getVal('ter-dec');
-  var urg=getCheck('ter-urg');
-  var label=document.getElementById('ter-type').options[document.getElementById('ter-type').selectedIndex].text.split('—')[0].trim();
   var lines=[];
+  var total=0;
 
-  var base=Math.round(qty*tarif);
-  lines.push({l:label+' · '+qty+' '+unit+' × '+tarif+' €',v:fmt(base)});
+  var tarifDec=profCm<=20?10:profCm<=40?14:profCm<=60?20:42.5;
+  var labelDec=profCm<=20?'0-20 cm':profCm<=40?'20-40 cm':profCm<=60?'40-60 cm':'>60 cm';
+  var majAcces=acces==='complique'?1.2:acces==='difficile'?1.4:1.0;
+  var labelAcces=acces==='facile'?'mini pelle':acces==='complique'?'manuel +20%':'manuel +40%';
+  var decCost=Math.round(surface*tarifDec*majAcces);
+  lines.push({l:'Décaissement '+labelDec+' ('+labelAcces+') · '+surface+' m²',v:fmt(decCost)});
+  total+=decCost;
 
-  var evacV=0;
-  if(getCheck('ter-evac')){var eq=getVal('ter-evac-qty');evacV=Math.round(eq*17);lines.push({l:'Évacuation terres '+eq+' m³ × 17 €',v:fmt(evacV)});}
-  var benneV=0;
-  if(getCheck('ter-benne')){var nb=getVal('ter-benne-qty');benneV=nb*400;lines.push({l:nb+' benne(s) 8m³ × 400 €',v:fmt(benneV)});}
-  var installV=0;
-  if(getCheck('ter-install')){installV=300;lines.push({l:'Installation chantier',v:'300 €'});}
+  if(getCheck('ter-install')){lines.push({l:'Installation chantier',v:'300 €'});total+=300;}
+  if(getCheck('ter-signa')){lines.push({l:'Signalisation chantier',v:'200 €'});total+=200;}
+
+  var m3foisonne=(surface*profM)*1.3;
+  if(getCheck('ter-evac')){
+    var benneSize=parseFloat(getChip('ter-benne-size'))||8;
+    var bennePrix={8:400,10:450,12:480,15:500,30:750};
+    var prixBenne=bennePrix[benneSize]||400;
+    var nbRotations=Math.ceil(m3foisonne/(benneSize*0.8));
+    lines.push({l:'Évacuation · '+nbRotations+' rotation(s) benne '+benneSize+'m³ × '+prixBenne+' €',v:fmt(nbRotations*prixBenne)});
+    lines.push({l:'Éco-taxe · '+nbRotations+' × 14 €',v:fmt(nbRotations*14)});
+    total+=nbRotations*prixBenne+nbRotations*14;
+  } else {
+    lines.push({l:'Sans évacuation — terres stockées sur site',v:'0 €',t:'incl'});
+  }
+
+  if(getCheck('ter-geo')){
+    var surfGeo=surface*1.2;
+    var nbRouleaux=Math.ceil(surfGeo/50);
+    var costPose=Math.round((surfGeo/2)*1.2);
+    lines.push({l:'Géotextile · '+nbRouleaux+' rouleau(x) 2×25m × 90 €',v:fmt(nbRouleaux*90)});
+    lines.push({l:'Pose géotextile · '+(surfGeo/2).toFixed(0)+' ml × 1,20 €',v:fmt(costPose)});
+    total+=nbRouleaux*90+costPose;
+  }
+
+  if(getCheck('ter-grave')){
+    var graveEpCm=getVal('ter-grave-ep')||10;
+    var graveM3=surface*(graveEpCm/100);
+    var nbCouches=Math.ceil(graveEpCm/10);
+    if(getCheck('ter-grave-fourni')){
+      var costEtalement=Math.round(surface*4);
+      var costCompact=Math.round(surface*nbCouches*3);
+      lines.push({l:'Étalement grave (fourniture client) · '+surface+' m² × 4 €',v:fmt(costEtalement)});
+      lines.push({l:'Compactage grave · '+nbCouches+' couche(s) × '+surface+' m² × 3 €',v:fmt(costCompact)});
+      total+=costEtalement+costCompact;
+    } else {
+      var prixGrave=9.5*(graveEpCm/10);
+      var costGrave=Math.round(surface*prixGrave);
+      var costEtalement=Math.round(surface*4);
+      var costCompact=Math.round(surface*nbCouches*3);
+      lines.push({l:'Grave calcaire 0/31,5 · '+graveM3.toFixed(2)+' m³ / '+(graveM3*1.8).toFixed(1)+' T · '+graveEpCm+' cm',v:fmt(costGrave)});
+      lines.push({l:'Étalement grave · '+surface+' m² × 4 €',v:fmt(costEtalement)});
+      lines.push({l:'Compactage grave · '+nbCouches+' couche(s) × '+surface+' m² × 3 €',v:fmt(costCompact)});
+      total+=costGrave+costEtalement+costCompact;
+    }
+  }
+
+  if(getCheck('ter-gravier')){
+    var gravierEpCm=getVal('ter-gravier-ep')||6;
+    var gravierM3=surface*(gravierEpCm/100);
+    if(getCheck('ter-gravier-fourni')){
+      var costEtalement=Math.round(surface*4);
+      var nbCouchesGF=Math.ceil(gravierEpCm/10);
+      lines.push({l:'Étalement gravier (fourniture client) · '+surface+' m² × 4 €',v:fmt(costEtalement)});
+      total+=costEtalement;
+      if(getCheck('ter-dalle')){
+        var nbDalles=Math.ceil(surface/1.92);
+        var moDalle=parseFloat(document.getElementById('ter-dalle-mo').value)||5;
+        lines.push({l:'Dalles stabilisatrices · '+nbDalles+' × 30 € (fourniture)',v:fmt(nbDalles*30)});
+        lines.push({l:'MO pose dalles · '+nbDalles+' × '+moDalle+' €',v:fmt(nbDalles*moDalle)});
+        total+=nbDalles*30+nbDalles*moDalle;
+      }
+      var cg=Math.round(surface*nbCouchesGF*3);
+      lines.push({l:'Compactage gravier · '+nbCouchesGF+' couche(s) × '+surface+' m² × 3 €',v:fmt(cg)});
+      total+=cg;
+    } else {
+      var prixGravier=parseFloat(document.getElementById('ter-gravier-prix').value)||6;
+      var costGravier=Math.round(surface*prixGravier*(gravierEpCm/4));
+      var costEtalement=Math.round(surface*4);
+      var nbCouchesG=Math.ceil(gravierEpCm/10);
+      lines.push({l:'Gravier 4/12 · '+gravierM3.toFixed(2)+' m³ / '+(gravierM3*1.5).toFixed(1)+' T · '+gravierEpCm+' cm',v:fmt(costGravier)});
+      lines.push({l:'Étalement gravier · '+surface+' m² × 4 €',v:fmt(costEtalement)});
+      total+=costGravier+costEtalement;
+      if(getCheck('ter-dalle')){
+        var nbDalles=Math.ceil(surface/1.92);
+        var moDalle=parseFloat(document.getElementById('ter-dalle-mo').value)||5;
+        lines.push({l:'Dalles stabilisatrices · '+nbDalles+' × 30 € (fourniture)',v:fmt(nbDalles*30)});
+        lines.push({l:'MO pose dalles · '+nbDalles+' × '+moDalle+' €',v:fmt(nbDalles*moDalle)});
+        total+=nbDalles*30+nbDalles*moDalle;
+      }
+      var cg=Math.round(surface*nbCouchesG*3);
+      lines.push({l:'Compactage gravier · '+nbCouchesG+' couche(s) × '+surface+' m² × 3 €',v:fmt(cg)});
+      total+=cg;
+    }
+  }
+
+  if(getCheck('ter-repli')){lines.push({l:'Repli de chantier',v:'250 €'});total+=250;}
 
   var maj=majDep(dep,dec);
   maj.lines.forEach(function(l){lines.push(l);});
+  total+=maj.total;
 
-  var st=base+evacV+benneV+installV+maj.total;
-  var urgSupp=0;
-  if(urg){urgSupp=Math.round(st*0.2);lines.push({l:'Urgence < 48h (+20%)',v:fmt(urgSupp)});}
-  var total=st+urgSupp;
+  if(getCheck('ter-urg')){var u=Math.round(total*0.2);lines.push({l:'Urgence < 48h (+20%)',v:fmt(u)});total+=u;}
   lines.push({l:'TOTAL ESTIMÉ H.T.',v:fmt(total)});
-  showResult('Terrassement',total,lines,'Prix moyens indicatifs HT · Devis définitif après visite de chantier.');
+  showResult('Terrassement',total,lines,'Tarifs HT indicatifs · Devis définitif après visite.');
+  // Stocker les charges matériaux pour le calcul de marge
+  var surf2=getVal('ter-surface');
+  var profM2=(getVal('ter-prof')||0)/100;
+  var m3foisonne2=(surf2*profM2)*1.3;
+  var benneSize2=parseFloat(getChip('ter-benne-size'))||8;
+  var bennePrix2={8:400,10:450,12:480,15:500,30:750};
+  var nbRot2=Math.ceil(m3foisonne2/(benneSize2*0.8));
+  var costBennes2=nbRot2*(bennePrix2[benneSize2]||400)+nbRot2*14;
+
+  var achatsT=[];
+  if(getCheck('ter-evac')) achatsT.push({label:'Bennes évacuation terres ('+nbRot2+' rotation(s))', id:'mg-a-bennes', val:costBennes2});
+  if(getCheck('ter-grave')&&!getCheck('ter-grave-fourni')){
+    var epG=getVal('ter-grave-ep')||10;
+    achatsT.push({label:'Fourniture grave 0/31,5 (achat)', id:'mg-a-grave', val:Math.round(surf2*9.5*(epG/10))});
+  }
+  if(getCheck('ter-gravier')&&!getCheck('ter-gravier-fourni')){
+    var epGr=getVal('ter-gravier-ep')||6;
+    var pxGr=parseFloat(document.getElementById('ter-gravier-prix').value)||6;
+    achatsT.push({label:'Fourniture gravier 4/12 (achat)', id:'mg-a-gravier', val:Math.round(surf2*(epGr/4)*pxGr)});
+  }
+  if(getCheck('ter-dalle')&&getCheck('ter-gravier')){
+    var nbD=Math.ceil(surf2/1.92);
+    achatsT.push({label:'Fourniture dalles stabilisatrices ('+nbD+' dalles)', id:'mg-a-dalles', val:nbD*30});
+  }
+  if(getCheck('ter-geo')){
+    var surfGeo2=surf2*1.2;
+    var nbRoul=Math.ceil(surfGeo2/50);
+    achatsT.push({label:'Géotextile ('+nbRoul+' rouleau(x) × 90 €)', id:'mg-a-geo', val:nbRoul*90});
+  }
+  window.terMargeData = { pole:'terrassement', ca: total, achats: achatsT };
+  document.getElementById('marge-box').classList.remove('hidden');
+  document.getElementById('mg-title').textContent='Calcul de marge — Terrassement';
+  buildMargeAchats();
+  calcMarge();
+}
+
+function buildMargeAchats(){
+  var data=window.terMargeData;
+  if(!data||!data.achats) return;
+  var wrap=document.getElementById('mg-achats-fields');
+  wrap.innerHTML='';
+  data.achats.forEach(function(a){
+    var row=document.createElement('div');
+    row.className='field-row';
+    row.style.marginBottom='6px';
+    row.innerHTML='<div class="field" style="flex:2"><label style="font-size:11px">'+a.label+'</label>'+
+      '<input type="number" id="'+a.id+'" value="'+a.val+'" min="0" step="1" inputmode="numeric" oninput="calcMarge()" style="height:32px"></div>';
+    wrap.appendChild(row);
+  });
+}
+
+function calcMarge(){
+  var data=window.terMargeData;
+  if(!data) return;
+
+  var jours=parseFloat(document.getElementById('mg-jours').value)||1;
+  var salaries=parseFloat(document.getElementById('mg-salaries').value)||2;
+  var salaire=parseFloat(document.getElementById('mg-salaire').value)||1500;
+  var coutJourEmployeur=Math.round((salaire*1.5)/22);
+  var chargePersonnel=Math.round(jours*salaries*coutJourEmployeur);
+
+  // Lire les achats depuis les champs
+  var totalAchats=0;
+  var achatLines='';
+  if(data.achats){
+    data.achats.forEach(function(a){
+      var el=document.getElementById(a.id);
+      var v=el?Math.round(parseFloat(el.value)||0):0;
+      totalAchats+=v;
+      if(v>0) achatLines+='<div style="display:flex;justify-content:space-between;padding:2px 0;border-bottom:1px solid #e8f0f4;color:#4a6070;font-size:11px"><span>— '+a.label+'</span><span>'+fmt(v)+'</span></div>';
+    });
+  }
+
+  var totalCharges=chargePersonnel+totalAchats;
+  var marge=data.ca-totalCharges;
+  var pct=data.ca>0?Math.round(marge/data.ca*100):0;
+
+  var row='<div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #dde8ee">';
+  var html=row+'<span style="font-weight:700">CA H.T.</span><span style="font-weight:700;color:#0D2B3E">'+fmt(data.ca)+'</span></div>';
+  html+=achatLines;
+  html+=row+'<span style="color:#4a6070">— MO ('+jours+'j × '+salaries+' sal. · '+fmt(coutJourEmployeur)+'/j · net '+fmt(salaire)+'/mois)</span><span style="font-weight:700;color:#4a6070">'+fmt(chargePersonnel)+'</span></div>';
+  html+=row.replace('border-bottom:1px solid #dde8ee','border-top:2px solid #c0d8e0;font-weight:700')+'<span>Total charges</span><span style="color:#A32D2D">'+fmt(totalCharges)+'</span></div>';
+
+  document.getElementById('mg-charges-list').innerHTML=html;
+
+  var margeColor=pct>=40?'#0F6E56':pct>=20?'#854F0B':'#A32D2D';
+  var margeLabel=pct>=40?'Bonne marge':pct>=20?'Marge correcte':'Marge faible';
+  document.getElementById('mg-marge-val').textContent=fmt(marge)+' HT';
+  document.getElementById('mg-pct-val').innerHTML='<span style="background:'+margeColor+';color:#fff;padding:3px 12px;border-radius:20px;font-size:12px;font-weight:600">'+pct+'% — '+margeLabel+'</span>';
+}
+</script>
+<script>
+// PWA — injection manifest dynamique
+var manifest = {
+  name: "Hor-Devis-Debarras",
+  short_name: "Hor-Devis",
+  description: "Devis rapide terrain — Horizon Démolition",
+  start_url: "./",
+  display: "standalone",
+  orientation: "portrait",
+  background_color: "#f2f4f6",
+  theme_color: "#0D2B3E",
+  icons: [
+    {
+      src: "data:image/svg+xml," + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192"><rect width="192" height="192" rx="40" fill="#0D2B3E"/><circle cx="96" cy="96" r="60" fill="none" stroke="#0e8a8a" stroke-width="8"/><text x="96" y="110" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="42" fill="#ffffff">HD</text></svg>'),
+      sizes: "192x192",
+      type: "image/svg+xml",
+      purpose: "any maskable"
+    },
+    {
+      src: "data:image/svg+xml," + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><rect width="512" height="512" rx="100" fill="#0D2B3E"/><circle cx="256" cy="256" r="160" fill="none" stroke="#0e8a8a" stroke-width="20"/><text x="256" y="295" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="110" fill="#ffffff">HD</text></svg>'),
+      sizes: "512x512",
+      type: "image/svg+xml",
+      purpose: "any maskable"
+    }
+  ],
+  shortcuts: [
+    { name: "Débarras classique", short_name: "Classique", url: "./#classique" },
+    { name: "Débarras TAC", short_name: "TAC", url: "./#tac" },
+    { name: "Diogène", short_name: "Diogène", url: "./#diogene" },
+    { name: "Terrassement", short_name: "Terrassement", url: "./#terrassement" }
+  ]
+};
+var blob = new Blob([JSON.stringify(manifest)], {type:'application/json'});
+var url = URL.createObjectURL(blob);
+var link = document.createElement('link');
+link.rel = 'manifest';
+link.href = url;
+document.head.appendChild(link);
+
+// Apple touch icon inline SVG
+var appleIcon = document.createElement('link');
+appleIcon.rel = 'apple-touch-icon';
+appleIcon.href = "data:image/svg+xml," + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180"><rect width="180" height="180" rx="40" fill="#0D2B3E"/><circle cx="90" cy="90" r="56" fill="none" stroke="#0e8a8a" stroke-width="7"/><text x="90" y="103" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="40" fill="#ffffff">HD</text></svg>');
+document.head.appendChild(appleIcon);
+
+// Service Worker pour mode hors-ligne
+if('serviceWorker' in navigator) {
+  var swCode = `
+const CACHE = 'hor-devis-v1';
+self.addEventListener('install', e => {
+  e.waitUntil(caches.open(CACHE).then(c => c.addAll(['/'])));
+  self.skipWaiting();
+});
+self.addEventListener('activate', e => {
+  e.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))));
+  self.clients.claim();
+});
+self.addEventListener('fetch', e => {
+  e.respondWith(caches.match(e.request).then(r => r || fetch(e.request).then(res => {
+    var rc = res.clone();
+    caches.open(CACHE).then(c => c.put(e.request, rc));
+    return res;
+  }).catch(() => caches.match(e.request))));
+});
+  `;
+  var swBlob = new Blob([swCode], {type:'application/javascript'});
+  var swUrl = URL.createObjectURL(swBlob);
+  navigator.serviceWorker.register(swUrl).catch(function(){});
+}
+
+// Bandeau "Installer l'appli" si pas encore installée
+var deferredPrompt = null;
+window.addEventListener('beforeinstallprompt', function(e) {
+  e.preventDefault();
+  deferredPrompt = e;
+  var banner = document.getElementById('install-banner');
+  if(banner) banner.style.display = 'flex';
+});
+window.addEventListener('appinstalled', function() {
+  var banner = document.getElementById('install-banner');
+  if(banner) banner.style.display = 'none';
+});
+function installApp() {
+  if(deferredPrompt) {
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then(function(){ deferredPrompt = null; });
+    var banner = document.getElementById('install-banner');
+    if(banner) banner.style.display = 'none';
+  }
 }
 </script>
 </body>
